@@ -42,7 +42,7 @@ competition = st.checkbox('Com questões de concurso?')
 answer = st.checkbox('Com resposta no final?')
 
 def generate_response(input_text):
-  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048, stop=['\n'])
+  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048)
   st.info(llm(input_text))
 
 with st.form('my_form'):

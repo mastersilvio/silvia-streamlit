@@ -42,7 +42,7 @@ competition = st.checkbox('Com questões de concurso?')
 answer = st.checkbox('Com resposta no final?')
 
 def generate_response(input_text):
-  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048)
+  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048, stop=['\n'])
   st.info(llm(input_text))
 
 with st.form('my_form'):
@@ -53,8 +53,8 @@ with st.form('my_form'):
   text += f'- Quantidade de questões: {quantity}\n'
   text += f'- Questões de múltipla escolha: {multiple_choice}\n'
   text += f'- Situação problema: {problem_situation}\n'
-  text += f'- Com resposta no final: {answer}\n'
-  text += f'- Questões de bancas de concurso público: {competition}\n'
+  text += f'- Com as repostas/gabarito no final: {answer}\n'
+  text += f'- Questões de bancas de concurso público: {competition} e a descrição no início do enunciado quando for o caso\n'
 
   submitted = st.form_submit_button('Solicitar Questões')
   if submitted:

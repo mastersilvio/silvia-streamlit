@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-st.set_page_config(page_title="silvIA", page_icon="images/silvIA.png")
+st.set_page_config(page_title="SilvIA", page_icon="images/silvIA.png")
 st.image("images/silvIA.png", width=100)
 st.title('silvIA')
 st.subheader('A sua assistente para gerar questões utilizando Inteligência Artificial')

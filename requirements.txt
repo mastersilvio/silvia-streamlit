@@ -4,3 +4,4 @@ langchain_community
 langchain
 python-dotenv
 reportlab
+docker

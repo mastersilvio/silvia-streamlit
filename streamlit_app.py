@@ -32,6 +32,10 @@ grades = [
         ]
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
+if not openai_api_key:
+    st.error("A chave da API do OpenAI não está definida. Verifique o arquivo .env.")
+    st.stop()
+
 discipline = st.selectbox('Escolha uma disciplina:', disciplines)
 grade = st.selectbox('Escolha uma série:', grades)
 content = st.text_input('Conteúdo:')
@@ -42,20 +46,22 @@ competition = st.checkbox('Com questões de concurso?')
 answer = st.checkbox('Com resposta no final?')
 
 def generate_response(input_text):
-  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048)
-  st.info(llm(input_text))
+    llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048)
+    st.info(llm(input_text))
 
 with st.form('my_form'):
-  text = 'Crie uma prova para que eu possa estudar e contenha as seguintes características:\n'
-  text += f'- Disciplina: {discipline}\n'
-  text += f'- Série: {grade}\n'
-  text += f'- Conteúdo: {content}\n'
-  text += f'- Quantidade de questões: {quantity}\n'
-  text += f'- Questões de múltipla escolha: {multiple_choice}\n'
-  text += f'- Situação problema: {problem_situation}\n'
-  text += f'- Com as repostas/gabarito no final: {answer}\n'
-  text += f'- Questões de bancas de concurso público: {competition} e a descrição no início do enunciado quando for o caso\n'
+    text = (
+        'Crie uma prova para que eu possa estudar e contenha as seguintes características:\n'
+        f'- Disciplina: {discipline}\n'
+        f'- Série: {grade}\n'
+        f'- Conteúdo: {content}\n'
+        f'- Quantidade de questões: {quantity}\n'
+        f'- Questões de múltipla escolha: {multiple_choice}\n'
+        f'- Situação problema: {problem_situation}\n'
+        f'- Com as repostas/gabarito no final: {answer}\n'
+        f'- Questões de bancas de concurso público: {competition} e a descrição no início do enunciado quando for o caso\n'
+    )
 
-  submitted = st.form_submit_button('Solicitar Questões')
-  if submitted:
-    generate_response(text)
+    submitted = st.form_submit_button('Solicitar Questões')
+    if submitted:
+        generate_response(text)

@@ -1,7 +1,10 @@
 import streamlit as st
-from langchain.llms import OpenAI
+from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv
+from crewai import Crew
+from agents import QuestionAgents
+from tasks import QuestionTasks
 
 load_dotenv()
 
@@ -45,9 +48,40 @@ problem_situation = st.checkbox('Com situação problema?')
 competition = st.checkbox('Com questões de concurso?')
 answer = st.checkbox('Com resposta no final?')
 
-def generate_response(input_text):
-    llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key, max_tokens=2048)
-    st.info(llm(input_text))
+def generate_response(params):
+    try:
+        with st.spinner('Gerando questões...'):
+            # Configurar o modelo
+            llm = ChatOpenAI(
+                temperature=0.7,
+                model="gpt-3.5-turbo",
+                openai_api_key=openai_api_key
+            )
+
+            # Criar instâncias de agentes e tarefas
+            agents = QuestionAgents(llm=llm)
+            tasks = QuestionTasks()
+
+            # Criar e executar o crew
+            crew = Crew(
+                agents=[
+                    agents.content_specialist,
+                    agents.question_reviewer,
+                    agents.format_specialist
+                ],
+                tasks=[
+                    tasks.create_content_task(agents.content_specialist, params),
+                    tasks.create_review_task(agents.question_reviewer, ""),
+                    tasks.create_format_task(agents.format_specialist, "", params)
+                ],
+                verbose=True
+            )
+
+            result = crew.kickoff()
+            st.success("Questões geradas com sucesso!")
+            st.markdown(result)
+    except Exception as e:
+        st.error(f"Erro ao gerar questões: {str(e)}")
 
 with st.form('my_form'):
     text = (
@@ -64,4 +98,14 @@ with st.form('my_form'):
 
     submitted = st.form_submit_button('Solicitar Questões')
     if submitted:
-        generate_response(text)
+        params = {
+            'discipline': discipline,
+            'grade': grade,
+            'content': content,
+            'quantity': quantity,
+            'multiple_choice': multiple_choice,
+            'problem_situation': problem_situation,
+            'competition': competition,
+            'answer': answer
+        }
+        generate_response(params)

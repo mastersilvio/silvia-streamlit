@@ -1,7 +1,10 @@
-streamlit
-openai
-langchain_community
-langchain
-python-dotenv
-reportlab
-docker
+streamlit>=1.24.0
+openai>=1.0.0
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-openai>=0.0.2
+python-dotenv>=0.19.0
+reportlab>=3.6.12
+docker>=6.1.2
+crewai==0.83.0
+pydantic>=2.0.0
